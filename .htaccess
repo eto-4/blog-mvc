@@ -1,0 +1,22 @@
+# Activem el motor de reescriptura d'URL
+# ---
+RewriteEngine On
+
+# -------------------------------
+# Condicions per evitar reescriptura
+# -------------------------------
+# Si l'arxiu sol·licitat existeix, no fem res
+# ---
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Si el directori sol·licitat existeix, no fem res
+# ---
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# -------------------------------
+# Redirigir totes les altres peticions a index.php
+# -------------------------------
+# QSA → Query String Append: manté els paràmetres GET
+# L   → Last: atura el processament de regles després d'aquesta
+# ---
+RewriteRule ^ index.php [QSA,L]
