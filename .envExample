@@ -1,5 +1,5 @@
 # DB Info
-HOST=localhost
-DBNAME=db_Name
-USER=root
-PASS=''
+DB_HOST=localhost
+DB_NAME=db_Name
+DB_USER=root
+DB_PASS=''

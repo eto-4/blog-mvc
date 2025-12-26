@@ -56,15 +56,15 @@ $loggerMng->pushHandler(
 try {
     // INICIALITZACIÓ BD
     // ==========
-    // $db = new Database($host, $dbName, $user, $pass); // Inicialitzar la base de dades.
-    // $pdo = $db->getConnection();
+    $db = new Database($host, $dbName, $user, $pass); // Inicialitzar la base de dades.
+    $pdo = $db->getConnection();
     
     // INICIALITZACIÓ BD
     $router = new Router();
 
-    $loggerMng->error('Això es un error de prova 🤡');
-    $loggerMng->warning('Això es un warning de prova 🤡');
-    $loggerMng->info('Això es un missatge informatiu');
+    // $loggerMng->error('Això es un error de prova 🤡');
+    // $loggerMng->warning('Això es un warning de prova 🤡');
+    // $loggerMng->info('Això es un missatge informatiu');
 
     /**
      * -------------------------------
