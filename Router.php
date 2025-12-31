@@ -34,16 +34,9 @@ class Router
         $this->logger = $logger;
 
         // LOG ROUTER INICIALITZAT - INFO
-        $this->log('info', 'Router inicialitzat', [
+        $this->logger->info('Router inicialitzat', [
             'basePath' => $this->basePath
         ]);
-    }
-
-    private function log(string $level, string $message, array $context = []): void
-    {
-        if ($this->logger) {
-            $this->logger->{$level}($message, $context);
-        }
     }
 
     /**
@@ -104,7 +97,7 @@ class Router
         }
         
         // LOG DISPATCH INICIAT - INFO
-        $this->log('info', 'Dispatch iniciat', [
+        $this->logger->info('Dispatch iniciat', [
             'request_URI' => $_SERVER['REQUEST_URI'],
             'parsed_URI'  => $uri,
             'method'      => $_SERVER['REQUEST_METHOD']
@@ -120,7 +113,7 @@ class Router
             }
 
             // LOG COMPROVANT RUTA - INFO
-            $this->log('info', 'Comprovant ruta', [
+            $this->logger->info('Comprovant ruta', [
                 'method'  => $route['method'],
                 'pattern' => $route['pattern'],
                 'uri'     => $uri
@@ -130,7 +123,7 @@ class Router
             if (preg_match($route['pattern'], $uri, $matches)) {
 
                 // LOG RUTA COINCICENT - INFO
-                $this->log('info', 'Ruta Coincident', [
+                $this->logger->info('Ruta Coincident', [
                     'pattern' => $route['pattern'],
                     'uri'     => $uri,
                     'params'  => $matches
@@ -158,16 +151,16 @@ class Router
 
                     require_once $controllerFile;
                     
-                    $instance = new $controller();
+                    $controllerInstance = new $controller($this->logger);
 
-                    if (!method_exists($instance, $method)) {
+                    if (!method_exists($controllerInstance, $method)) {
                         http_response_code(500);
                         echo "Mètode $method no trobat a $controller.";
                         exit;
                     }
 
                     // Instanciem el controlador i cridem el mètode amb els paràmetres capturats
-                    return call_user_func_array([$instance, $method], $matches);
+                    return call_user_func_array([$controllerInstance, $method], $matches);
                 }
                 
                 // Si és una funció anònima, la cridem amb els paràmetres capturats
@@ -176,7 +169,7 @@ class Router
         }
         
         // LOG CAP RUTA COINCIDEIX - WARNING
-        $this->log('warning', 'Cap ruta coincideix', [
+        $this->logger->warning('Cap ruta coincideix', [
             'uri'    => $uri,
             'method' => $_SERVER['REQUEST_METHOD'],
             'routes' => array_column($this->routes, 'pattern')

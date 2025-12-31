@@ -1,4 +1,5 @@
 <?php
+use Psr\Log\LoggerInterface;
 
 require_once APP_ROOT . '/models/Tasca.php';
 require_once APP_ROOT . '/config/Database.php';
@@ -13,11 +14,13 @@ require_once APP_ROOT . '/helpers/Validator.php';
 class TaskController
 {
     private PDO $pdo;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
         // Obtenim la connexió PDO des del singleton Database
         $this->pdo = Database::getInstance()->getConnection();
+        $this->logger = $logger;
     }
 
     /**
@@ -54,6 +57,13 @@ class TaskController
         $validator->required('title')->string('title', 3, 255);
         $validator->enum('priority'); // 'low', 'medium', 'high' segons Validator
 
+        $this->logger->info('Petició de creació de tasca', [
+            'post'         => $_POST,
+            'title'        => $data['title'],
+            'description'  => substr($data['description'], 0, 50),
+            'priority'     => $data['priority']
+        ]);
+
         if (!$validator->isValid()) {
             $errors = $validator->errors();
             // Tornem al formulari amb errors
@@ -64,10 +74,16 @@ class TaskController
         // Creem la tasca
         $task = new Task($this->pdo);
         $task->title       = $data['title'];
-        $task->description = $data['description'] ?? '';
-        $task->priority    = $data['priority'] ?? 'medium';
+        $task->description = $data['description'];
+        $task->priority    = $data['priority'];
 
         $task->save();
+
+        $this->logger->info('Tasca creada', [
+            'title'       => $task->title,
+            'description' => substr($task->description, 0, 50),
+            'priority'    => $task->priority
+        ]);
 
         header('Location:' . BASE_PATH . '/tasques');
         exit;
@@ -106,10 +122,24 @@ class TaskController
 
         $data = Sanitizer::clean($_POST);
 
+        $before = [
+            'title'           => $task->title,
+            'description'     => substr($task->description, 0, 50) ?? '',
+            'tags'            => $task->tags,
+            'cost'            => $task->cost,
+            'due_date'        => $task->due_date,
+            'expected_hours'  => $task->expected_hours,
+            'used_hours'      => $task->used_hours,
+            'priority'        => $task->priority,
+            'state'           => $task->state
+        ];
+
         // Validacions igual que en store
         $validator = new Validator($data);
         $validator->required('title')->string('title', 3, 255);
         $validator->enum('priority');
+        $validator->array('tags');
+        $validator->array('tags');
 
         if (!$validator->isValid()) {
             $errors = $validator->errors();
@@ -117,11 +147,45 @@ class TaskController
             return;
         }
 
-        $task->title       = $data['title'];
-        $task->description = $data['description'] ?? '';
-        $task->priority    = $data['priority'] ?? 'medium';
+        $task->title          = $data['title'];
+        $task->description    = $data['description'];
+        $task->tags           = $data['tags'];
+        $task->cost           = $data['cost'];
+        $task->due_date       = $data['due_date'];
+        $task->expected_hours = $data['expected_hours'];
+        $task->used_hours     = $data['used_hours'];
+        $task->priority       = $data['priority'];
+        $task->state          = $data['state'];
 
         $task->update();
+
+        $after = [
+            'title'           => $task->title,
+            'description'     => substr($task->description, 0, 50),
+            'tags'            => $task->tags,
+            'cost'            => $task->cost,
+            'due_date'        => $task->due_date,
+            'expected_hours'  => $task->expected_hours,
+            'used_hours'      => $task->used_hours,
+            'priority'        => $task->priority,
+            'state'           => $task->state
+        ];
+
+        $changes = [];
+
+        foreach ($after as $key => $value) {
+            if ($before[$key] !== $value) {
+                $changes[$key] = [
+                    'before' => $key === 'description' ? substr($task->description, 0, 50) : $before[$key],
+                    'after'  => $key === 'description' ? substr($task->description, 0, 50) : $value
+                ];
+            }
+        }
+
+        $this->logger->info('Tasca actualitzada', [
+            'id'      => $task->id,
+            'changes' => $changes
+        ]);
 
         header('Location:' . BASE_PATH . '/tasques');
         exit;
@@ -135,7 +199,18 @@ class TaskController
         $task = new Task($this->pdo);
 
         if ($task->load($id)) {
+
+            $before = [
+                'id'    => $task->id,
+                'title' => $task->title
+            ];
+
             $task->delete();
+
+            $this->logger->warning('Tasca eliminada', [
+                'deleted' => true,
+                'task'    => $before
+            ]);
         }
 
         header('Location:' . BASE_PATH . '/tasques');

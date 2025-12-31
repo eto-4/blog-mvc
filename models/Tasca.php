@@ -17,14 +17,14 @@ class Task
     
     // Propietats de la tasca
     public $id;
-    public $title;
+    public $title = 'Default Title';
     public $description = '';
     public $tags = []; // Array d'etiquetes
     public $cost = 0;
     public $due_date;
     public $expected_hours = 20;
     public $used_hours = 0;
-    public $priority = 'medium';
+    public $priority = 'low';
     public $state = 'pending';
     public $finished_at;
     public $created_at;
