@@ -137,9 +137,15 @@ class TaskController
         // Validacions igual que en store
         $validator = new Validator($data);
         $validator->required('title')->string('title', 3, 255);
+        $validator->string('description', 0, 2000);
+        $validator->array('tags');
+        $validator->numeric('cost');
+        $validator->date('due_date', 'Y-m-d');
+        $validator->numeric('expected_hours');
+        $validator->numeric('used_hours');
         $validator->enum('priority');
-        $validator->array('tags');
-        $validator->array('tags');
+        $validator->enum('state');
+
 
         if (!$validator->isValid()) {
             $errors = $validator->errors();
@@ -176,8 +182,12 @@ class TaskController
         foreach ($after as $key => $value) {
             if ($before[$key] !== $value) {
                 $changes[$key] = [
-                    'before' => $key === 'description' ? substr($task->description, 0, 50) : $before[$key],
-                    'after'  => $key === 'description' ? substr($task->description, 0, 50) : $value
+                    'before' => $key === 'description' 
+                        ? substr($before[$key], 0, 50) 
+                        : $before[$key],
+                    'after'  => $key === 'description' 
+                        ? substr($value, 0, 50) 
+                        : $value
                 ];
             }
         }

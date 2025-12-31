@@ -4,7 +4,7 @@ class Validator
 {
     protected array $allowed = [
         'priority' => ['low', 'medium', 'high'],
-        'state'    => ['pending', 'completed'],
+        'state'    => ['pending', 'in-progress', 'blocked', 'completed']
     ];
      
     private array $data;
@@ -73,6 +73,20 @@ class Validator
         return $this;
     }
 
+    public function numeric(string $field): self 
+    {
+        if (!isset($this->data[$field]) || $this->data[$field] === '') {
+            return $this;
+        }
+
+        if (!is_numeric($this->data[$field])) {
+            $this->addError(
+                $field,
+                "Ha de ser un valor numèric."
+            );
+        }
+    }
+
     /**
      * Valida una data amb format estricte
      */
@@ -84,7 +98,7 @@ class Validator
 
         $date = \DateTime::createFromFormat($format, $this->data[$field]);
 
-        if (!$date || $date->format($format) !== $this->date[$field]) {
+        if (!$date || $date->format($format) !== $this->data[$field]) {
             $this->addError(
                 $field, 
                 "Format de date invàlid"
@@ -122,7 +136,7 @@ class Validator
             return $this;
         }
 
-        if (!is_array($this->date[$field])) {
+        if (!is_array($this->data[$field])) {
             $this->addError(
                 $field,
                 "Ha de ser una llista"
