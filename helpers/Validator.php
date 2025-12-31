@@ -85,6 +85,8 @@ class Validator
                 "Ha de ser un valor numèric."
             );
         }
+
+        return $this; 
     }
 
     /**
