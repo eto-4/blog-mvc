@@ -24,7 +24,7 @@ $priority = $_POST['priority'] ?? 'medium';
 $state = $_POST['state'] ?? 'pending';
 ?>
 
-<form action="/tasques" method="POST" class="form-grid">
+<form action="<?= BASE_PATH ?>/tasques" method="POST" class="form-grid">
     <div class="mTitle">Crear nova tasca</div>
 
     <div class="title">

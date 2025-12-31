@@ -33,6 +33,7 @@ class Router
         $this->basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');   
         $this->logger = $logger;
 
+        // LOG ROUTER INICIALITZAT - INFO
         $this->log('info', 'Router inicialitzat', [
             'basePath' => $this->basePath
         ]);
@@ -101,7 +102,8 @@ class Router
         if ($this->basePath !== '' && str_starts_with($uri, $this->basePath)) {
             $uri = substr($uri, strlen($this->basePath));
         }
-
+        
+        // LOG DISPATCH INICIAT - INFO
         $this->log('info', 'Dispatch iniciat', [
             'request_URI' => $_SERVER['REQUEST_URI'],
             'parsed_URI'  => $uri,
@@ -116,7 +118,8 @@ class Router
             if ($_SERVER['REQUEST_METHOD'] !== $route['method']) {
                 continue;
             }
-            
+
+            // LOG COMPROVANT RUTA - INFO
             $this->log('info', 'Comprovant ruta', [
                 'method'  => $route['method'],
                 'pattern' => $route['pattern'],
@@ -126,6 +129,7 @@ class Router
             // Comprovar si la ruta coincideix amb la regex
             if (preg_match($route['pattern'], $uri, $matches)) {
 
+                // LOG RUTA COINCICENT - INFO
                 $this->log('info', 'Ruta Coincident', [
                     'pattern' => $route['pattern'],
                     'uri'     => $uri,
@@ -171,6 +175,7 @@ class Router
             }
         }
         
+        // LOG CAP RUTA COINCIDEIX - WARNING
         $this->log('warning', 'Cap ruta coincideix', [
             'uri'    => $uri,
             'method' => $_SERVER['REQUEST_METHOD'],
