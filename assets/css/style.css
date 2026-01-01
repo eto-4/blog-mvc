@@ -67,7 +67,7 @@ body {
     margin: auto auto;
     min-height: 100% !important;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
 }
 
 /* Formulario con grid */
@@ -208,7 +208,7 @@ label {
 .tasks {
     display: flex;
     flex-direction: column;
-    padding: 6em 1.5em;
+    padding: 10em 1.5em;
     gap: 1.5rem;
 }
 

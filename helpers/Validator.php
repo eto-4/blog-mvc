@@ -60,7 +60,7 @@ class Validator
         ) {
             $this->addError(
                 $field, 
-                "El camp és obligatori!"
+                "El camp $field és obligatori!"
             );
         }
         return $this;
@@ -86,14 +86,14 @@ class Validator
         if ($length < $min) {
             $this->addError(
                 $field, 
-                "Ha de tenir com a mínim {$min} caràcters."
+                "La descripció ha de tenir com a mínim {$min} caràcters."
             );
         }
 
         if ($max !== null && $length > $max) {
             $this->addError(
                 $field, 
-                "No pot superar els {$max} caràcters."
+                "La descripció no pot superar els {$max} caràcters. Què vols escriure el quixot o que?"
             );
         }
 
@@ -115,7 +115,7 @@ class Validator
         if (!is_numeric($this->data[$field])) {
             $this->addError(
                 $field,
-                "Ha de ser un valor numèric."
+                "$field ha de ser un valor numèric."
             );
         }
 
