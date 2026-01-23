@@ -45,34 +45,108 @@ https://getcomposer.org/download/
 # Requisits Tècnics
 
 ## Estructura de Carpetes
-/
-├── config/
-│   └── Database.php
-├── controllers/
-│   ├── HomeController.php
-│   └── TaskController.php
-├── models/
-│   └── Tasca.php
-├── views/
-│   ├── layouts/
-│   │   ├── header.php
-│   │   └── footer.php
-│   ├── home/
-│   │   ├── index.php
-│   │   └── 404.php
-│   └── tasques/
-│       ├── index.php
-│       ├── create.php
-│       └── edit.php
-├── helpers/
-│   └── FlashMessages.php
-│   └── Validator.php
-├── assets/
-│   └── css/
-│       └── style.css
-├── .htaccess
-├── Router.php
-└── index.php
+blog-mvc/.
+│   .env
+│   .envExample
+│   .gitignore
+│   composer.json
+│   composer.lock
+│   README.md
+│
+├───public
+│   │   .htaccess
+│   │   index.php
+│   │
+│   └───assets
+│       ├───css
+│       │       style.css
+│       │
+│       ├───imgs
+│       └───js
+├───src
+│   ├───Domain
+│   │   ├───Models
+│   │   │       Post.php
+│   │   │       User.php
+│   │   │
+│   │   ├───Services
+│   │   │       AuthService.php
+│   │   │       ValidationService.php
+│   │   │
+│   │   └───Slug
+│   │           Slug.php
+│   │           SlugGenerator.php
+│   │
+│   ├───Http
+│   │   ├───Controllers
+│   │   │       AuthController.php
+│   │   │       HomeController.php
+│   │   │       PostController.php
+│   │   │       UserController.php
+│   │   │
+│   │   ├───InOutData
+│   │   │   ├───Input
+│   │   │   │       Sanitizer.php
+│   │   │   │
+│   │   │   └───Output
+│   │   │           Flash.php
+│   │   │
+│   │   ├───Middleware
+│   │   │       AuthMiddleware.php
+│   │   │       GuestMiddleware.php
+│   │   │       OwnerMiddleware.php
+│   │   │
+│   │   └───Session
+│   │           Session.php
+│   │
+│   ├───Infrastructure
+│   │   ├───Database
+│   │   │   ├───DatabaseCore
+│   │   │   │       Database.php
+│   │   │   │
+│   │   │   └───dbManager
+│   │   │       │   dbManager.php
+│   │   │       │
+│   │   │       └───dbMigrations
+│   │   │               create_database.sql
+│   │   │               create_tables.sql
+│   │   │
+│   │   ├───Logging
+│   │   │   └───logs
+│   │   │           .gitkeep
+│   │   │           mvcApp.log
+│   │   │           mvcError.log
+│   │   │           mvcWarnings.log
+│   │   │
+│   │   ├───Routing
+│   │   │       Redirect.php
+│   │   │       Router.php
+│   │   │
+│   │   ├───Security
+│   │   │       Csrf.php
+│   │   │
+│   │   └───Storage
+│   │       └───Uploads
+│   └───Views
+│       ├───auth
+│       │       auth.php
+│       │
+│       ├───home
+│       │       404.php
+│       │       home.php
+│       │
+│       ├───layouts
+│       │       app.php
+│       │       footer.php
+│       │       header.php
+│       │
+│       ├───posts
+│       │       create.php
+│       │       edit.php
+│       │       index.php
+│       │
+│       └───user
+└───vendor/
 
 ## Comandes per que tot funcion correctament:
 1. Clonar/Descarregar el repo a un dir.
