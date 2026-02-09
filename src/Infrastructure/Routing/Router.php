@@ -1,8 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Routing;
+
 use Psr\Log\LoggerInterface;
+
 /**
  * Router.php
- * 
+ *
  * Classe Router per gestionar totes les rutes de l'aplicació MVC.
  * Permet definir rutes GET i POST amb controladors o funcions anònimes
  * i despatxar-les segons la URL sol·licitada pel navegador.
@@ -34,9 +40,11 @@ class Router
         $this->logger = $logger;
 
         // LOG ROUTER INICIALITZAT - INFO
-        $this->logger->info('Router inicialitzat', [
-            'basePath' => $this->basePath
-        ]);
+        if ($this->logger) {
+            $this->logger->info('Router inicialitzat', [
+                'basePath' => $this->basePath
+            ]);
+        }
     }
 
     /**
@@ -97,11 +105,13 @@ class Router
         }
         
         // LOG DISPATCH INICIAT - INFO
-        $this->logger->info('Dispatch iniciat', [
-            'request_URI' => $_SERVER['REQUEST_URI'],
-            'parsed_URI'  => $uri,
-            'method'      => $_SERVER['REQUEST_METHOD']
-        ]);
+        if ($this->logger) {
+            $this->logger->info('Dispatch iniciat', [
+                'request_URI' => $_SERVER['REQUEST_URI'],
+                'parsed_URI'  => $uri,
+                'method'      => $_SERVER['REQUEST_METHOD']
+            ]);
+        }
         
         $uri = $uri === '' ? '/' : rtrim($uri, '/');
 
@@ -113,70 +123,95 @@ class Router
             }
 
             // LOG COMPROVANT RUTA - INFO
-            $this->logger->info('Comprovant ruta', [
-                'method'  => $route['method'],
-                'pattern' => $route['pattern'],
-                'uri'     => $uri
-            ]);
+            if ($this->logger) {
+                $this->logger->info('Comprovant ruta', [
+                    'method'  => $route['method'],
+                    'pattern' => $route['pattern'],
+                    'uri'     => $uri
+                ]);
+            }
 
             // Comprovar si la ruta coincideix amb la regex
             if (preg_match($route['pattern'], $uri, $matches)) {
 
                 // LOG RUTA COINCICENT - INFO
-                $this->logger->info('Ruta Coincident', [
-                    'pattern' => $route['pattern'],
-                    'uri'     => $uri,
-                    'params'  => $matches
-                ]);
+                if ($this->logger) {
+                    $this->logger->info('Ruta Coincident', [
+                        'pattern' => $route['pattern'],
+                        'uri'     => $uri,
+                        'params'  => $matches
+                    ]);
+                }
 
                 // Eliminem el match complet
                 array_shift($matches);
 
-                // Si és un controlador i mètode ("Controller@method")
-                if (
-                    is_string($route['callback']) 
-                    && 
-                    strpos($route['callback'], '@') !== false
-                ) {
-                    list($controller, $method) = explode('@', $route['callback']);
+                $callback = $route['callback'];
 
-                    $controllerFile = 'controllers/' . $controller . '.php';
+                // Forma "Controller@method" (per compatibilitat)
+                if (is_string($callback) && strpos($callback, '@') !== false) {
+                    [$controller, $method] = explode('@', $callback);
 
-                    // Comprovem que el fitxer existeix
-                    if (!file_exists($controllerFile)) {
+                    $controllerClass = 'App\\Http\\Controllers\\' . $controller;
+
+                    if (!class_exists($controllerClass)) {
                         http_response_code(500);
-                        echo "Controller $controller no trobat.";
+                        echo "Controller $controllerClass no trobat.";
                         exit;
                     }
 
-                    require_once $controllerFile;
-                    
-                    $controllerInstance = new $controller($this->logger);
+                    $controllerInstance = new $controllerClass();
 
                     if (!method_exists($controllerInstance, $method)) {
                         http_response_code(500);
-                        echo "Mètode $method no trobat a $controller.";
+                        echo "Mètode $method no trobat a $controllerClass.";
                         exit;
                     }
 
-                    // Instanciem el controlador i cridem el mètode amb els paràmetres capturats
-                    return call_user_func_array([$controllerInstance, $method], $matches);
+                    return $controllerInstance->$method(...$matches);
                 }
-                
-                // Si és una funció anònima, la cridem amb els paràmetres capturats
-                return call_user_func_array($route['callback'], $matches);
+
+                // Forma [Controller::class, 'method']
+                if (is_array($callback) && count($callback) === 2) {
+                    [$controllerClass, $method] = $callback;
+
+                    if (!class_exists($controllerClass)) {
+                        http_response_code(500);
+                        echo "Controller $controllerClass no trobat.";
+                        exit;
+                    }
+
+                    $controllerInstance = new $controllerClass();
+
+                    if (!method_exists($controllerInstance, $method)) {
+                        http_response_code(500);
+                        echo "Mètode $method no trobat a $controllerClass.";
+                        exit;
+                    }
+
+                    return $controllerInstance->$method(...$matches);
+                }
+
+                // Funcions anònimes o callables genèrics
+                return call_user_func_array($callback, $matches);
             }
         }
         
         // LOG CAP RUTA COINCIDEIX - WARNING
-        $this->logger->warning('Cap ruta coincideix', [
-            'uri'    => $uri,
-            'method' => $_SERVER['REQUEST_METHOD'],
-            'routes' => array_column($this->routes, 'pattern')
-        ]);
+        if ($this->logger) {
+            $this->logger->warning('Cap ruta coincideix', [
+                'uri'    => $uri,
+                'method' => $_SERVER['REQUEST_METHOD'],
+                'routes' => array_column($this->routes, 'pattern')
+            ]);
+        }
         // Si no trobem cap ruta → Error 404
         http_response_code(404);
-        require "views/home/404.php";
+        if (defined('APP_ROOT') && file_exists(APP_ROOT . '/src/Views/home/404.php')) {
+            require APP_ROOT . '/src/Views/home/404.php';
+        } else {
+            echo '404 - Pàgina no trobada';
+        }
         exit;
     } 
 }

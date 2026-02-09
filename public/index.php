@@ -1,51 +1,62 @@
 <?php
+declare(strict_types=1);
+
 /**
  * index.php
- * 
+ *
  * Punt d'entrada principal de l'aplicació MVC.
- * Gestiona totes les rutes a través del Router, crida als controladors (HomeController, TaskController, Logger) corresponents i fa la conexió a la bbdd.
-
  */
 
-// Imports
-require_once 'Router.php';
-require_once __DIR__ . '/vendor/autoload.php';
+// -----------------------------------------------------------------------------
+// PATHS
+// -----------------------------------------------------------------------------
+define('APP_ROOT', dirname(__DIR__));
+define('BASE_PATH', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
 
-// ENV CONFIG
-// ==========
+// -----------------------------------------------------------------------------
+// SESSIÓ
+// -----------------------------------------------------------------------------
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// -----------------------------------------------------------------------------
+// AUTOLOAD
+// -----------------------------------------------------------------------------
+require_once APP_ROOT . '/vendor/autoload.php';
+
+// -----------------------------------------------------------------------------
+// ENV
+// -----------------------------------------------------------------------------
 use Dotenv\Dotenv;
 
-// Carregar variables
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
 
-// ---
-
-// LOGGER CONF
-// ==========
+// -----------------------------------------------------------------------------
+// LOGGER
+// -----------------------------------------------------------------------------
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use App\Infrastructure\Routing\Router;
 
-// Logger app's
 $loggerMng = new Logger('mvc');
 
-// Handler per a logs d'errors.
 $loggerMng->pushHandler(
-    new StreamHandler(__DIR__ . '/logs/mvcError.log', Logger::ERROR)
+    new StreamHandler(APP_ROOT . '/src/Infrastructure/Logging/logs/mvcError.log', Logger::ERROR)
 );
 
-// Handler per a logs d'avisos.
 $loggerMng->pushHandler(
-    new StreamHandler(__DIR__ . '/logs/mvcWarnings.log', Logger::WARNING)
+    new StreamHandler(APP_ROOT . '/src/Infrastructure/Logging/logs/mvcWarnings.log', Logger::WARNING)
 );
 
-// Handler per a logs normals.
 $loggerMng->pushHandler(
-    new StreamHandler(__DIR__ . '/logs/mvcApp.log', Logger::INFO)
+    new StreamHandler(APP_ROOT . '/src/Infrastructure/Logging/logs/mvcApp.log', Logger::INFO)
 );
 
-// ---
-// Encapsulació d'errors al log.
+// -----------------------------------------------------------------------------
+// APP
+// -----------------------------------------------------------------------------
 try {    
     // INICIALITZACIÓ BD
     $router = new Router($loggerMng);
@@ -60,37 +71,27 @@ try {
     $router->get('/', 'HomeController@index');
     
     // Llistat de totes les tasques
-    $router->get('/tasques', 'TaskController@index');
+    $router->get('/tasques', 'PostController@index');
     
     // Formulari de creació d'una nova tasca
-    $router->get('/tasques/create', 'TaskController@create');
+    $router->get('/tasques/create', 'PostController@create');
     
     // Processar la creació d'una nova tasca
-    $router->post('/tasques', 'TaskController@store');
+    $router->post('/tasques', 'PostController@store');
     
     // Formulari d'edició d'una tasca concreta
-    $router->get('/tasques/{id}/edit', 'TaskController@edit');
+    $router->get('/tasques/{id}/edit', 'PostController@edit');
     
     // Processar actualització d'una tasca concreta
-    $router->post('/tasques/{id}', 'TaskController@update');
+    $router->post('/tasques/{id}', 'PostController@update');
     
     // Eliminar una tasca concreta
-    $router->post('/tasques/{id}/delete', 'TaskController@delete');
-    
-    /**
-     * Despatxar la ruta actual
-     * Passa la URI del navegador al Router per gestionar la ruta corresponent
-     */
-    define('APP_ROOT', __DIR__);
-    define('BASE_PATH', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
+    $router->post('/tasques/{id}/delete', 'PostController@delete');
+
     $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $router->dispatch($uri);
 
-}
-catch (RuntimeException $e)
-{
+} catch (RuntimeException $e) {
     $loggerMng->error($e->getMessage(), ['exception' => $e]);
-
-    // Mostrar missatge amigable a l'usuari
-    echo "Ha succeït un error inesperat. Si us plau intenteu-ho de nou més tard.";
+    echo "Ha succeït un error inesperat.";
 }

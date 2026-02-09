@@ -2,6 +2,12 @@
     "require": {
         "vlucas/phpdotenv": "^5.6",
         "monolog/monolog": "^3.9",
-        "composer": "*"
+        "composer": "*",
+        "fakerphp/faker": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
     }
 }

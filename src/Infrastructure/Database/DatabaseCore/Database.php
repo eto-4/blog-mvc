@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App\Infrastructure\Database\DatabaseCore;
+
+use PDO;
+use PDOException;
+use RuntimeException;
+
 /**
  * Classe Database
  *
@@ -68,10 +76,10 @@ class Database
     ): Database {
         if (!self::$instance) {
             // Si no es passen paràmetres, intentar llegir de les variables d'entorn
-            $host   = $host ?? $_ENV['DB_HOST'];
-            $dbName = $dbName ?? $_ENV['DB_NAME'];
-            $user   = $user ?? $_ENV['DB_USER'];
-            $pass   = $pass ?? $_ENV['DB_PASS'];
+            $host   = $host ?? ($_ENV['DB_HOST'] ?? 'localhost');
+            $dbName = $dbName ?? ($_ENV['DB_NAME'] ?? 'blog_mvc');
+            $user   = $user ?? ($_ENV['DB_USER'] ?? 'root');
+            $pass   = $pass ?? ($_ENV['DB_PASS'] ?? '');
 
             // Crear la instància Singleton
             self::$instance = new self($host, $dbName, $user, $pass);
@@ -92,8 +100,16 @@ class Database
     private function connect(): void
     {
         try {
-            $this->pdo = new PDO("mysql:host={$this->host}", $this->user, $this->pass);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo = new PDO(
+                "mysql:host={$this->host};charset=utf8mb4",
+                $this->user,
+                $this->pass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]
+            );
         } catch (PDOException $e) {
             throw new RuntimeException(
                 'No s\'ha pogut connectar al servidor de bases de dades.',
@@ -114,7 +130,7 @@ class Database
     private function checkDatabase(): void
     {
         try {
-            $sql = file_get_contents(APP_ROOT . '/config/dbBasicFiles/create_database.sql');
+            $sql = file_get_contents(APP_ROOT . '/src/Infrastructure/Database/DatabaseCore/dbMigrations/create_database.sql');
             $this->pdo->exec($sql);
             $this->pdo->exec("USE `{$this->dbName}`");
         } catch (PDOException $e) {
@@ -135,7 +151,7 @@ class Database
     private function checkTables(): void
     {
         try {
-            $sql = file_get_contents(APP_ROOT . '/config/dbBasicFiles/create_tables.sql');
+            $sql = file_get_contents(APP_ROOT . '/src/Infrastructure/Database/DatabaseCore/dbMigrations/create_tables.sql');
             $this->pdo->exec($sql);
         } catch (PDOException $e) {
             throw new RuntimeException(

@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
 /**
  * Controlador principal de la pàgina d'inici
  *
@@ -15,12 +19,12 @@ class HomeController
     public function index(): void
     {
         // Capçalera comuna de l'aplicació
-        require APP_ROOT . '/views/layouts/header.php';
+        require APP_ROOT . '/src/Views/layouts/header.php';
 
         // Vista principal de la pàgina d'inici
-        require APP_ROOT . '/views/home/index.php';
+        require APP_ROOT . '/src/Views/home/home.php';
 
         // Peu de pàgina comú
-        require APP_ROOT . '/views/layouts/footer.php';
+        require APP_ROOT . '/src/Views/layouts/footer.php';
     }
 }
