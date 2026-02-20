@@ -1,12 +1,11 @@
-        </main>
-        <!-- views/layouts/footer -->
+</main>
+
         <footer class="footer">
             <small>
-                &copy; <?= date('Y') ?> Aplicació MVC. Tots els drets reservats.
+                &copy; <?= date('Y') ?> Blog MVC. Tots els drets reservats.
             </small>
         </footer>
 
-        <!-- JS personalitzat -->
-        <script src="/public/js/app.js"></script>
+        <script src="<?= BASE_PATH ?>/assets/js/app.js"></script>
     </body>
 </html>
