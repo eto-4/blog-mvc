@@ -86,8 +86,12 @@ class Router
             $pattern = rtrim($pattern, '/');
         }
         
-        $regex = preg_replace('#\{[a-zA-Z_]+\}#', '([0-9]+)', $pattern);
-    
+        // {id} - només números | cualsevol altre param. - alfanumèric + guións.
+        $regex = preg_replace_callback(
+            '#\{([a-zA-Z_]+)\}#',
+            fn($matches) => $matches[1] === 'id' ? '([0-9]+)' : '([a-zA-Z-0-9_-]+)',
+            $pattern
+        );
         return "#^" . $regex . "$#";
     }
 
