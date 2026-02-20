@@ -67,6 +67,7 @@ class AuthService
 
         // Autologin després de registrar
         Session::set('user_id', $userId);
+        Session::set('user_role', 'user');
         Session::regenerate();
 
         return ['success' => true, 'errors' => []];
@@ -96,6 +97,7 @@ class AuthService
         }
 
         Session::set('user_id', (int) $user['id']);
+        Session::set('user_role', $user['role']);
         Session::regenerate();
 
         // Actualitzar last_login_at
@@ -107,6 +109,7 @@ class AuthService
     public function logout(): void
     {
         Session::forget('user_id');
+        Session::forget('user_role');
         Session::regenerate();
     }
 

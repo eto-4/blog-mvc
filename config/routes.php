@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 
 /**
  * Fitxer de definició de rutes de l'aplicació.
@@ -46,11 +47,13 @@ return function (Router $router): void {
     $router->post('/profile/avatar', [UserController::class, 'avatar']);
 
     // Rutes d'administració
-    $router->get('/admin', [UserController::class, 'adminIndex']);
-    $router->get('/admin/users', [UserController::class, 'adminUserList']);
-    $router->get('/admin/posts', [UserController::class, 'adminPosts']);
-    $router->post('/admin/users/{id}/delete', [UserController::class, 'adminDeleteUser']);
-    $router->post('/admin/posts/{id}/status', [UserController::class, 'adminSwitchStatus']);
-
+    $router->get('/admin', [AdminController::class, 'adminIndex']);
+    $router->get('/admin/users', [AdminController::class, 'adminUserList']);
+    $router->get('/admin/posts', [AdminController::class, 'adminPosts']);
+    $router->post('/admin/users/{id}/delete', [AdminController::class, 'adminDeleteUser']);
+    $router->post('/admin/posts/{id}/status', [AdminController::class, 'adminSwitchStatus']);
+    $router->get('/admin/audit', [AdminController::class, 'adminAuditLog']);
+    $router->post('/admin/audit/{id}/restore', [AdminController::class, 'adminRestore']);
+    $router->post('/admin/audit/{id}/delete', [AdminController::class, 'adminAuditDelete']);
 
 };

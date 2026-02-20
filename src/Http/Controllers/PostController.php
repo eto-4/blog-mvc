@@ -280,7 +280,7 @@ class PostController
 
         // Regenerar slug només si el títol ha canviat
         if ($post->title !== $title) {
-            $post->slug = SlugGenerator::generate($title);
+            $post->slug = SlugGenerator::generate($title, (int) $post->id);
         }
 
         $post->title   = $title;
