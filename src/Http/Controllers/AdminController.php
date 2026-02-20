@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Domain\Models\Admin;
 use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
+use App\Infrastructure\Routing\Redirect;
 
 /**
  * AdminController
@@ -44,9 +45,7 @@ class AdminController
     private function requireAdmin(): void
     {
         if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
-            http_response_code(403);
-            require APP_ROOT . '/src/Views/home/404.php';
-            exit;
+            Redirect::withError('/', 'Accés no autoritzat.');
         }
     }
 
@@ -123,16 +122,12 @@ class AdminController
 
         // Evitar que l'admin s'elimini a si mateix
         if ($userId === $this->adminId()) {
-            Session::set('flash_error', 'No pots eliminar el teu propi compte.');
-            header('Location: ' . BASE_PATH . '/admin/users');
-            exit;
+            Redirect::withError('/admin/users', 'No pots eliminar el teu propi compte.');
         }
 
         $this->adminModel->deleteUser($userId, $this->adminId());
 
-        Session::set('flash_success', 'Usuari eliminat correctament. Pots restaurar-lo des del historial.');
-        header('Location: ' . BASE_PATH . '/admin/users');
-        exit;
+        Redirect::withSuccess('/admin/users', 'Usuari eliminat correctament. Pots restaurar-lo des del historial.');
     }
 
     // -------------------------------------------------------------------------
@@ -168,9 +163,7 @@ class AdminController
 
         $this->adminModel->switchPostStatus((int) $id, $newStatus, $this->adminId());
 
-        Session::set('flash_success', 'Estat del post actualitzat.');
-        header('Location: ' . BASE_PATH . '/admin/posts');
-        exit;
+        Redirect::withSuccess('/admin/posts', 'Estat del post actualitzat.');
     }
 
     // -------------------------------------------------------------------------
@@ -204,13 +197,10 @@ class AdminController
         $success = $this->adminModel->restoreFromAudit((int) $id, $this->adminId());
 
         if ($success) {
-            Session::set('flash_success', 'Entitat restaurada correctament.');
+            Redirect::withSuccess('/admin/audit', 'Entitat restaurada correctament.');
         } else {
-            Session::set('flash_error', 'No s\'ha pogut restaurar. Pot ser que l\'autor del post ja no existeixi o que l\'entrada hagi expirat.');
+            Redirect::withError('/admin/audit', 'No s\'ha pogut restaurar. Pot ser que l\'autor del post ja no existeixi o que l\'entrada hagi expirat.');
         }
-
-        header('Location: ' . BASE_PATH . '/admin/audit');
-        exit;
     }
 
     /**
@@ -224,8 +214,6 @@ class AdminController
 
         $this->adminModel->deleteAuditEntry((int) $id);
 
-        Session::set('flash_success', 'Entrada eliminada permanentment del historial.');
-        header('Location: ' . BASE_PATH . '/admin/audit');
-        exit;
+        Redirect::withSuccess('/admin/audit', 'Entrada eliminada permanentment del historial.');
     }
 }

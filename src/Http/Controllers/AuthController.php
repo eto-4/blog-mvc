@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Services\AuthService;
 use App\Infrastructure\Security\Csrf;
+use App\Infrastructure\Routing\Redirect;
 
 class AuthController
 {
@@ -44,8 +45,7 @@ class AuthController
             return;
         }
 
-        header('Location:' . BASE_PATH . '/');
-        exit;
+        Redirect::to('/');
     }
 
     public function showRegister(): void
@@ -78,15 +78,13 @@ class AuthController
             return;
         }
 
-        header('Location:' . BASE_PATH . '/');
-        exit;
+        Redirect::to('/');
     }
 
     public function logout(): void
     {
         $this->authService->logout();
-        header('Location:' . BASE_PATH . '/');
-        exit;
+        Redirect::to('/');
     }
 }
 

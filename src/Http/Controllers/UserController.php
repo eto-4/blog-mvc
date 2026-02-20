@@ -8,6 +8,7 @@ use App\Domain\Models\User;
 use App\Domain\Services\AuthService;
 use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
+use App\Infrastructure\Routing\Redirect;
 
 /**
  * UserController
@@ -41,8 +42,7 @@ class UserController
     private function requireAuth(): void
     {
         if (!Session::has('user_id')) {
-            header('Location: ' . BASE_PATH . '/login');
-            exit;
+            Redirect::to('/login');
         }
     }
 
@@ -58,8 +58,7 @@ class UserController
         if (!$user) {
             // Sessió invàlida, tancar i redirigir
             Session::forget('user_id');
-            header('Location: ' . BASE_PATH . '/login');
-            exit;
+            Redirect::to('/login');
         }
 
         return $user;
@@ -154,9 +153,7 @@ class UserController
             $this->userModel->updatePassword($id, password_hash($password, PASSWORD_BCRYPT));
         }
 
-        Session::set('flash_success', 'Perfil actualitzat correctament.');
-        header('Location: ' . BASE_PATH . '/profile');
-        exit;
+        Redirect::withSuccess('/profile', 'Perfil actualitzat correctament.');
     }
 
     /**
@@ -173,27 +170,21 @@ class UserController
 
         // Comprovar que s'ha enviat un fitxer
         if (empty($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
-            Session::set('flash_error', 'No s\'ha pogut pujar l\'avatar. Torna-ho a intentar.');
-            header('Location: ' . BASE_PATH . '/profile/edit');
-            exit;
+            Redirect::withError('/profile/edit', 'No s\'ha pogut pujar l\'avatar. Torna-ho a intentar.');
         }
 
         $file     = $_FILES['avatar'];
         $maxSize  = 2 * 1024 * 1024; // 2 MB
-        $allowed  = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowed  = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
         $mimeType = mime_content_type($file['tmp_name']);
 
         // Validacions del fitxer
         if ($file['size'] > $maxSize) {
-            Session::set('flash_error', 'L\'avatar no pot superar els 2 MB.');
-            header('Location: ' . BASE_PATH . '/profile/edit');
-            exit;
+            Redirect::withError('/profile/edit', 'L\'avatar no pot superar els 2 MB.');
         }
 
         if (!in_array($mimeType, $allowed, true)) {
-            Session::set('flash_error', 'Format no permès. Utilitza JPG, PNG, GIF o WEBP.');
-            header('Location: ' . BASE_PATH . '/profile/edit');
-            exit;
+            Redirect::withError('/profile/edit', 'Format no permès. Utilitza JPG, PNG, JPEG o WEBP.');
         }
 
         // Generar nom únic i moure el fitxer
@@ -212,16 +203,12 @@ class UserController
         }
 
         if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            Session::set('flash_error', 'Error en moure el fitxer. Torna-ho a intentar.');
-            header('Location: ' . BASE_PATH . '/profile/edit');
-            exit;
+            Redirect::withError('/profile/edit', 'Error en moure el fitxer. Torna-ho a intentar.');
         }
 
         $this->userModel->updateAvatar($id, 'avatars/' . $filename);
 
-        Session::set('flash_success', 'Avatar actualitzat correctament.');
-        header('Location: ' . BASE_PATH . '/profile');
-        exit;
+        Redirect::withSuccess('/profile', 'Avatar actualitzat correctament.');
     }
 
     // -------------------------------------------------------------------------

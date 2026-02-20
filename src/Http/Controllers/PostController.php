@@ -8,6 +8,7 @@ use App\Domain\Models\Post;
 use App\Domain\Slug\SlugGenerator;
 use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
+use App\Infrastructure\Routing\Redirect;
 
 /**
  * PostController
@@ -42,8 +43,7 @@ class PostController
     private function requireAuth(): void
     {
         if (!Session::has('user_id')) {
-            header('Location: ' . BASE_PATH . '/login');
-            exit;
+            Redirect::to('/login');
         }
     }
 
@@ -232,9 +232,7 @@ class PostController
 
         $post->save();
 
-        Session::set('flash_success', 'Post creat correctament.');
-        header('Location: ' . BASE_PATH . '/my-posts');
-        exit;
+        Redirect::withSuccess('/my-posts', 'Post creat correctament.');
     }
 
     /**
@@ -295,9 +293,7 @@ class PostController
 
         $post->update();
 
-        Session::set('flash_success', 'Post actualitzat correctament.');
-        header('Location: ' . BASE_PATH . '/my-posts');
-        exit;
+        Redirect::withSuccess('/my-posts', 'Post actualitzat correctament.');
     }
 
     /**
@@ -312,9 +308,7 @@ class PostController
 
         $post->delete();
 
-        Session::set('flash_success', 'Post eliminat correctament.');
-        header('Location: ' . BASE_PATH . '/my-posts');
-        exit;
+        Redirect::withSuccess('/my-posts', 'Post eliminat correctament.');
     }
 
     /**
@@ -337,9 +331,7 @@ class PostController
 
         $post->update();
 
-        Session::set('flash_success', 'Estat del post actualitzat.');
-        header('Location: ' . BASE_PATH . '/my-posts');
-        exit;
+        Redirect::withSuccess('/my-posts', 'Estat del post actualitzat.');
     }
 
     // -------------------------------------------------------------------------
