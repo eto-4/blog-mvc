@@ -10,6 +10,10 @@ use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
 use App\Infrastructure\Routing\Redirect;
 
+// Middleware
+use App\Http\Middleware\AuthMiddleware;
+
+
 /**
  * UserController
  *
@@ -35,16 +39,6 @@ class UserController
     // -------------------------------------------------------------------------
     // Helpers privats
     // -------------------------------------------------------------------------
-
-    /**
-     * Redirigeix a login si l'usuari no està autenticat.
-     */
-    private function requireAuth(): void
-    {
-        if (!Session::has('user_id')) {
-            Redirect::to('/login');
-        }
-    }
 
     /**
      * Retorna l'usuari autenticat o redirigeix.
@@ -88,7 +82,7 @@ class UserController
      */
     public function userProfile(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
 
         $user  = $this->currentUser();
         $stats = $this->userModel->getStats((int) $user['id']);
@@ -105,7 +99,7 @@ class UserController
      */
     public function userEditProfile(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
 
         $user = $this->currentUser();
 
@@ -122,7 +116,7 @@ class UserController
      */
     public function update(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
 
         $user = $this->currentUser();
@@ -162,7 +156,7 @@ class UserController
      */
     public function avatar(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
 
         $user = $this->currentUser();

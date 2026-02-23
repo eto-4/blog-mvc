@@ -9,6 +9,9 @@ use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
 use App\Infrastructure\Routing\Redirect;
 
+// Middleware
+use App\Http\Middleware\AdminMiddleware;
+
 /**
  * AdminController
  *
@@ -38,16 +41,6 @@ class AdminController
     // -------------------------------------------------------------------------
     // Helpers privats
     // -------------------------------------------------------------------------
-
-    /**
-     * Redirigeix si l'usuari no està autenticat o no és admin.
-     */
-    private function requireAdmin(): void
-    {
-        if (!Session::has('user_id') || Session::get('user_role') !== 'admin') {
-            Redirect::withError('/', 'Accés no autoritzat.');
-        }
-    }
 
     /**
      * ID de l'admin autenticat.
@@ -81,7 +74,7 @@ class AdminController
      */
     public function adminIndex(): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
 
         $stats = $this->adminModel->getGlobalStats();
 
@@ -100,7 +93,7 @@ class AdminController
      */
     public function adminUserList(): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
 
         $users = $this->adminModel->getAllUsers();
 
@@ -115,7 +108,7 @@ class AdminController
      */
     public function adminDeleteUser(string $id): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
         Csrf::validate();
 
         $userId = (int) $id;
@@ -140,7 +133,7 @@ class AdminController
      */
     public function adminPosts(): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
 
         $posts = $this->adminModel->getAllPosts();
 
@@ -156,7 +149,7 @@ class AdminController
      */
     public function adminSwitchStatus(string $id): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
         Csrf::validate();
 
         $newStatus = $_POST['status'] ?? '';
@@ -176,7 +169,7 @@ class AdminController
      */
     public function adminAuditLog(): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
 
         $entries = $this->adminModel->getAuditLog();
 
@@ -191,7 +184,7 @@ class AdminController
      */
     public function adminRestore(string $id): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
         Csrf::validate();
 
         $success = $this->adminModel->restoreFromAudit((int) $id, $this->adminId());
@@ -209,7 +202,7 @@ class AdminController
      */
     public function adminAuditDelete(string $id): void
     {
-        $this->requireAdmin();
+        AdminMiddleware::handle();
         Csrf::validate();
 
         $this->adminModel->deleteAuditEntry((int) $id);

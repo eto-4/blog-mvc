@@ -10,6 +10,10 @@ use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
 use App\Infrastructure\Routing\Redirect;
 
+// Middlewares
+use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\OwnerMiddleware;
+
 /**
  * PostController
  *
@@ -36,40 +40,6 @@ class PostController
     // Helpers privats
     // -------------------------------------------------------------------------
 
-    /**
-     * Redirigeix a login si l'usuari no està autenticat.
-     * Substitut temporal fins que AuthMiddleware estigui implementat.
-     */
-    private function requireAuth(): void
-    {
-        if (!Session::has('user_id')) {
-            Redirect::to('/login');
-        }
-    }
-
-    /**
-     * Comprova que el post existeix i que l'usuari en és l'autor.
-     *
-     * @throws void  Fa exit() directament si no passa la validació.
-     */
-    private function requireOwner(int $id): Post
-    {
-        $post = new Post();
-
-        if (!$post->load($id)) {
-            http_response_code(404);
-            require APP_ROOT . '/src/Views/home/404.php';
-            exit;
-        }
-
-        if ((int) $post->author_id !== (int) Session::get('user_id')) {
-            http_response_code(403);
-            require APP_ROOT . '/src/Views/home/404.php';
-            exit;
-        }
-
-        return $post;
-    }
 
     /**
      * Carrega header + vista + footer passant variables a la vista.
@@ -177,7 +147,7 @@ class PostController
      */
     public function myPosts(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
 
         $posts = Post::findByAuthor(null, (int) Session::get('user_id'));
 
@@ -190,7 +160,7 @@ class PostController
      */
     public function create(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
 
         $this->render('posts/create', [
             'csrfToken' => Csrf::generate(),
@@ -203,7 +173,7 @@ class PostController
      */
     public function store(): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
 
         $title   = trim($_POST['title']   ?? '');
@@ -241,8 +211,8 @@ class PostController
      */
     public function edit(string $id): void
     {
-        $this->requireAuth();
-        $post = $this->requireOwner((int) $id);
+        AuthMiddleware::handle();
+        $post = OwnerMiddleware::handle((int) $id);
 
         $this->render('posts/edit', [
             'post'      => $post,
@@ -256,9 +226,9 @@ class PostController
      */
     public function update(string $id): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
-        $post = $this->requireOwner((int) $id);
+        $post = OwnerMiddleware::handle((int) $id);
 
         $title   = trim($_POST['title']   ?? '');
         $content = trim($_POST['content'] ?? '');
@@ -302,9 +272,9 @@ class PostController
      */
     public function delete(string $id): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
-        $post = $this->requireOwner((int) $id);
+        $post = OwnerMiddleware::handle((int) $id);
 
         $post->delete();
 
@@ -317,9 +287,9 @@ class PostController
      */
     public function publish(string $id): void
     {
-        $this->requireAuth();
+        AuthMiddleware::handle();
         Csrf::validate();
-        $post = $this->requireOwner((int) $id);
+        $post = OwnerMiddleware::handle((int) $id);
 
         if ($post->status === 'published') {
             $post->status       = 'draft';

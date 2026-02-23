@@ -8,6 +8,9 @@ use App\Domain\Services\AuthService;
 use App\Infrastructure\Security\Csrf;
 use App\Infrastructure\Routing\Redirect;
 
+// Middleware
+use App\Http\Middleware\GuestMiddleware;
+
 class AuthController
 {
     private AuthService $authService;
@@ -19,6 +22,7 @@ class AuthController
 
     public function showLogin(): void
     {
+        GuestMiddleware::handle();
         require APP_ROOT . '/src/Views/layouts/header.php';
         require APP_ROOT . '/src/Views/auth/login.php';
         require APP_ROOT . '/src/Views/layouts/footer.php';
@@ -50,6 +54,7 @@ class AuthController
 
     public function showRegister(): void
     {
+        GuestMiddleware::handle();
         require APP_ROOT . '/src/Views/layouts/header.php';
         require APP_ROOT . '/src/Views/auth/register.php';
         require APP_ROOT . '/src/Views/layouts/footer.php';
