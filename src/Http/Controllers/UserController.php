@@ -105,7 +105,7 @@ class UserController
 
         $this->render('user/edit', [
             'user'      => $user,
-            'csrfToken' => Csrf::generate(),
+            'csrfToken' => Csrf::token(),
         ]);
     }
 
@@ -134,7 +134,7 @@ class UserController
                 'user'      => $user,
                 'errors'    => $errors,
                 'old'       => $_POST,
-                'csrfToken' => Csrf::generate(),
+                'csrfToken' => Csrf::token(),
             ]);
             return;
         }
