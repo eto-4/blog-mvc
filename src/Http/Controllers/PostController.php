@@ -292,7 +292,7 @@ class PostController
         $post = OwnerMiddleware::handle((int) $id);
 
         if ($post->status === 'published') {
-            $post->status       = 'draft';
+            $post->status       = 'archived';
             $post->published_at = null;
         } else {
             $post->status       = 'published';
