@@ -184,7 +184,7 @@ class UserController
         // Generar nom únic i moure el fitxer
         $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'avatar_' . $id . '_' . time() . '.' . $ext;
-        $destDir  = APP_ROOT . '/storage/uploads/avatars/';
+        $destDir  = APP_ROOT . '/public/storage/uploads/avatars/';
         $destPath = $destDir . $filename;
 
         if (!is_dir($destDir)) {
@@ -192,8 +192,8 @@ class UserController
         }
 
         // Eliminar avatar anterior si existeix i no és el per defecte
-        if (!empty($user['avatar']) && file_exists(APP_ROOT . '/storage/uploads/' . $user['avatar'])) {
-            unlink(APP_ROOT . '/storage/uploads/' . $user['avatar']);
+        if (!empty($user['avatar']) && file_exists(APP_ROOT . '/public/storage/uploads/' . $user['avatar'])) {
+            unlink(APP_ROOT . '/public/storage/uploads/' . $user['avatar']);
         }
 
         if (!move_uploaded_file($file['tmp_name'], $destPath)) {
