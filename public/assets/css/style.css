@@ -703,3 +703,345 @@ label {
     border-radius: 50%;
     object-fit: cover;
 }
+
+/* =========================================================
+   Admin panel
+   ========================================================= */
+
+/* Layout admin: sidebar + main */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 120px);
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Sidebar */
+.admin-sidebar {
+    background: rgba(13, 17, 23, 0.98);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.admin-nav-title {
+    color: #6e7681;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 1.25rem;
+    margin: 0 0 0.5rem;
+}
+
+.admin-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-nav ul li a {
+    display: block;
+    padding: 0.6rem 1.25rem;
+    color: #8b949e;
+    text-decoration: none;
+    font-size: 0.95rem;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+}
+
+.admin-nav ul li a:hover {
+    color: #c9d1d9;
+    background: rgba(255,255,255,0.04);
+}
+
+.admin-nav ul li a.active {
+    color: #58a6ff;
+    border-left-color: #58a6ff;
+    background: rgba(88, 166, 255, 0.08);
+}
+
+.admin-nav hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin: 0.75rem 1.25rem;
+}
+
+/* Main content admin */
+.admin-main {
+    padding: 2rem;
+    background: #f4f6f8;
+    min-height: 100%;
+}
+
+.admin-page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
+    color: #1f2328;
+}
+
+.admin-count {
+    background: #e8f0fe;
+    color: #1967d2;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+
+.admin-info-text {
+    color: #6e7681;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Stats grid dashboard */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.admin-stat-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.admin-stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1967d2;
+}
+
+.admin-stat-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2328;
+}
+
+.admin-stat-sub {
+    font-size: 0.78rem;
+    color: #6e7681;
+}
+
+/* Quick actions */
+.admin-quick-actions h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+    color: #1f2328;
+}
+
+.admin-quick-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-quick-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 1.25rem 2rem;
+    text-decoration: none;
+    color: #1f2328;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.admin-quick-card:hover {
+    border-color: #1967d2;
+    box-shadow: 0 2px 8px rgba(25, 103, 210, 0.15);
+}
+
+.admin-quick-icon {
+    font-size: 1.75rem;
+}
+
+/* Taula admin */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.875rem;
+}
+
+.admin-table th {
+    background: #f0f2f5;
+    padding: 0.65rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: #444;
+    border-bottom: 1px solid #e0e0e0;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    color: #1f2328;
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Avatar petit */
+.admin-avatar-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
+.admin-avatar-sm-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1f6feb;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
+.admin-user-name {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* Role badge */
+.role-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.role-admin { background: #fff3cd; color: #856404; }
+.role-user  { background: #e8f0fe; color: #1967d2; }
+
+/* Badge "Tu" */
+.admin-you-badge {
+    font-size: 0.75rem;
+    color: #6e7681;
+    font-style: italic;
+}
+
+/* Post title admin */
+.admin-post-title {
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-post-title a {
+    color: #1967d2;
+    text-decoration: none;
+}
+
+.admin-post-title a:hover {
+    text-decoration: underline;
+}
+
+/* Select d'estat inline */
+.admin-status-select {
+    width: auto;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    background: #f0f2f5;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+    color: #1f2328;
+    cursor: pointer;
+}
+
+/* Audit badges */
+.audit-badge {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.audit-delete  { background: #fdecea; color: #842029; }
+.audit-switch  { background: #e8f0fe; color: #1967d2; }
+.audit-restore { background: #d4edda; color: #155724; }
+
+.audit-entity {
+    font-size: 0.8rem;
+    color: #6e7681;
+}
+
+.audit-snapshot {
+    max-width: 200px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.audit-expires {
+    font-size: 0.78rem;
+    color: #6e7681;
+}
+
+/* Responsive admin */
+@media (max-width: 768px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sidebar {
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .admin-main {
+        padding: 1rem;
+    }
+}
