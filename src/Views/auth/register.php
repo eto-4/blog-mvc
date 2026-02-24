@@ -7,76 +7,95 @@ use App\Infrastructure\Security\Csrf;
 $errors = $errors ?? [];
 ?>
 
-<section class="auth-section">
+<div class="auth-wrapper">
     <div class="auth-card">
-        <h1 class="auth-title">Crear compte</h1>
+
+        <h1 class="h4 fw-bold text-center mb-4">Crear compte</h1>
 
         <form method="POST" action="<?= BASE_PATH ?>/register">
             <?= Csrf::field() ?>
 
-            <div class="form-group">
-                <label for="name">Nom</label>
+            <div class="mb-3">
+                <label for="name" class="form-label">Nom</label>
                 <input
                     type="text"
                     name="name"
                     id="name"
+                    class="form-control <?= !empty($errors['name']) ? 'is-invalid' : '' ?>"
                     value="<?= htmlspecialchars($_POST['name'] ?? '', ENT_QUOTES) ?>"
-                    placeholder="El teu nom..."
+                    placeholder="El teu nom"
                     required
                 >
                 <?php if (!empty($errors['name'])): ?>
-                    <p class="field-error"><?= htmlspecialchars($errors['name'], ENT_QUOTES) ?></p>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['name'], ENT_QUOTES) ?>
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
                 <input
                     type="email"
                     name="email"
                     id="email"
+                    class="form-control <?= !empty($errors['email']) ? 'is-invalid' : '' ?>"
                     value="<?= htmlspecialchars($_POST['email'] ?? '', ENT_QUOTES) ?>"
                     placeholder="correu@exemple.com"
                     required
                 >
                 <?php if (!empty($errors['email'])): ?>
-                    <p class="field-error"><?= htmlspecialchars($errors['email'], ENT_QUOTES) ?></p>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['email'], ENT_QUOTES) ?>
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <div class="form-group">
-                <label for="password">Contrasenya</label>
+            <div class="mb-3">
+                <label for="password" class="form-label">Contrasenya</label>
                 <input
                     type="password"
                     name="password"
                     id="password"
+                    class="form-control <?= !empty($errors['password']) ? 'is-invalid' : '' ?>"
                     placeholder="Mínim 8 caràcters, 1 majúscula, 1 número, 1 símbol"
                     required
                 >
                 <?php if (!empty($errors['password'])): ?>
-                    <p class="field-error"><?= htmlspecialchars($errors['password'], ENT_QUOTES) ?></p>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['password'], ENT_QUOTES) ?>
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <div class="form-group">
-                <label for="password_confirmation">Repeteix la contrasenya</label>
+            <div class="mb-4">
+                <label for="password_confirmation" class="form-label">Repeteix la contrasenya</label>
                 <input
                     type="password"
                     name="password_confirmation"
                     id="password_confirmation"
+                    class="form-control <?= !empty($errors['password_confirmation']) ? 'is-invalid' : '' ?>"
                     placeholder="Repeteix la contrasenya"
                     required
                 >
                 <?php if (!empty($errors['password_confirmation'])): ?>
-                    <p class="field-error"><?= htmlspecialchars($errors['password_confirmation'], ENT_QUOTES) ?></p>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['password_confirmation'], ENT_QUOTES) ?>
+                    </div>
                 <?php endif; ?>
             </div>
 
-            <button type="submit" class="btn btn-primary auth-submit">Registrar-se</button>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-person-plus me-2"></i>Registrar-se
+            </button>
         </form>
 
-        <p class="auth-footer">
-            Ja tens compte? <a href="<?= BASE_PATH ?>/login">Inicia sessió</a>
+        <hr class="my-3">
+
+        <p class="text-center text-muted small mb-0">
+            Ja tens compte?
+            <a href="<?= BASE_PATH ?>/login" class="text-decoration-none">Inicia sessió</a>
         </p>
+
     </div>
-</section>
+</div>
