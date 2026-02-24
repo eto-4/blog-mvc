@@ -6,10 +6,17 @@ namespace App\Infrastructure\Database\Seeders;
 
 use App\Domain\Slug\SlugGenerator;
 use App\Infrastructure\Database\DatabaseCore\Database;
+use Dotenv\Dotenv; 
 use Faker\Factory as FakerFactory;
 use PDO;
 
 require_once __DIR__ . '/../../../../vendor/autoload.php';
+
+// Carregar variables d'entorn
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../../../');
+$dotenv->load();
+
+define('APP_ROOT', __DIR__ . '/../../../../');
 
 /**
  * Script per poblar la base de dades amb dades de prova.
