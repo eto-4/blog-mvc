@@ -4,84 +4,94 @@
 /** @var array  $posts       */
 /** @var int    $totalPages  */
 /** @var int    $currentPage */
-/** @var string $searchQuery Opcional, present quan venim de /search */
+/** @var string $searchQuery */
 
 $isSearch = isset($searchQuery);
 ?>
 
-<section class="posts-section">
-
+<div class="d-flex justify-content-between align-items-center mb-4">
     <?php if ($isSearch): ?>
-        <div class="posts-header">
-            <h1 class="section-title">
-                Resultats per: <em><?= htmlspecialchars($searchQuery, ENT_QUOTES) ?></em>
-            </h1>
-            <a href="<?= BASE_PATH ?>/posts" class="btn btn-sm btn-primary">← Tots els posts</a>
-        </div>
+        <h1 class="h4 fw-bold mb-0">
+            Resultats per: <em class="text-muted"><?= htmlspecialchars($searchQuery, ENT_QUOTES) ?></em>
+        </h1>
+        <a href="<?= BASE_PATH ?>/posts" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Tots els posts
+        </a>
     <?php else: ?>
-        <div class="posts-header">
-            <h1 class="section-title">Posts</h1>
-            <form method="GET" action="<?= BASE_PATH ?>/search" class="search-form">
-                <input type="text" name="q" placeholder="Cerca posts..." value="">
-                <button type="submit" class="btn btn-sm btn-primary">Cerca</button>
-            </form>
-        </div>
+        <h1 class="h4 fw-bold mb-0">Posts</h1>
+        <form method="GET" action="<?= BASE_PATH ?>/search" class="d-flex gap-2">
+            <input type="text" name="q" class="form-control form-control-sm"
+                   placeholder="Cerca posts..." style="width: 220px;">
+            <button type="submit" class="btn btn-sm btn-primary">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
     <?php endif; ?>
+</div>
 
-    <?php if (empty($posts)): ?>
-        <p class="empty-state">
-            <?= $isSearch ? 'Cap resultat trobat.' : 'Encara no hi ha posts publicats.' ?>
-        </p>
-    <?php else: ?>
-        <div class="posts-grid">
-            <?php foreach ($posts as $post): ?>
-                <article class="post-card">
-                    <div class="post-card-body">
-                        <h2 class="post-card-title">
+<?php if (empty($posts)): ?>
+    <div class="text-center text-muted py-5">
+        <i class="bi bi-journal-x fs-1 d-block mb-3"></i>
+        <?= $isSearch ? 'Cap resultat trobat.' : 'Encara no hi ha posts publicats.' ?>
+    </div>
+<?php else: ?>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4">
+        <?php foreach ($posts as $post): ?>
+            <div class="col">
+                <article class="post-card card h-100">
+                    <div class="card-body d-flex flex-column gap-2">
+                        <h2 class="card-title h6 mb-0">
                             <a href="<?= BASE_PATH ?>/posts/<?= htmlspecialchars($post['slug'], ENT_QUOTES) ?>">
                                 <?= htmlspecialchars($post['title'], ENT_QUOTES) ?>
                             </a>
                         </h2>
-
-                        <p class="post-card-excerpt">
+                        <p class="card-text text-muted small flex-grow-1">
                             <?= htmlspecialchars($post['excerpt'] ?? '', ENT_QUOTES) ?>
                         </p>
-                    </div>
-
-                    <div class="post-card-footer">
-                        <span class="post-meta">
-                            Per
-                            <a href="<?= BASE_PATH ?>/author/<?= (int) $post['author_id'] ?>">
-                                <?= htmlspecialchars($post['author_name'] ?? 'Autor desconegut', ENT_QUOTES) ?>
-                            </a>
-                        </span>
-                        <span class="post-meta">
-                            <?= $post['published_at'] ? date('d/m/Y', strtotime($post['published_at'])) : '' ?>
-                        </span>
-                        <span class="post-meta">👁 <?= (int) $post['views_count'] ?></span>
+                        <div class="d-flex gap-3 text-muted small mt-auto pt-2 border-top">
+                            <span>
+                                <i class="bi bi-person me-1"></i>
+                                <a href="<?= BASE_PATH ?>/author/<?= (int) $post['author_id'] ?>"
+                                   class="text-decoration-none text-muted">
+                                    <?= htmlspecialchars($post['author_name'] ?? 'Autor desconegut', ENT_QUOTES) ?>
+                                </a>
+                            </span>
+                            <?php if ($post['published_at']): ?>
+                                <span>
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <?= date('d/m/Y', strtotime($post['published_at'])) ?>
+                                </span>
+                            <?php endif; ?>
+                            <span>
+                                <i class="bi bi-eye me-1"></i><?= (int) $post['views_count'] ?>
+                            </span>
+                        </div>
                     </div>
                 </article>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
-        <?php if ($totalPages > 1): ?>
-            <nav class="pagination">
-                <?php if ($currentPage > 1): ?>
-                    <a href="?page=<?= $currentPage - 1 ?>" class="btn btn-sm btn-primary">← Anterior</a>
-                <?php endif; ?>
+    <?php if ($totalPages > 1): ?>
+        <nav class="d-flex justify-content-center gap-1">
+            <?php if ($currentPage > 1): ?>
+                <a href="?page=<?= $currentPage - 1 ?>" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            <?php endif; ?>
 
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?= $i ?>"
-                       class="btn btn-sm <?= $i === $currentPage ? 'btn-primary' : 'btn-outline-secondary' ?>">
-                        <?= $i ?>
-                    </a>
-                <?php endfor; ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>"
+                   class="btn btn-sm <?= $i === $currentPage ? 'btn-primary' : 'btn-outline-secondary' ?>">
+                    <?= $i ?>
+                </a>
+            <?php endfor; ?>
 
-                <?php if ($currentPage < $totalPages): ?>
-                    <a href="?page=<?= $currentPage + 1 ?>" class="btn btn-sm btn-primary">Següent →</a>
-                <?php endif; ?>
-            </nav>
-        <?php endif; ?>
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="?page=<?= $currentPage + 1 ?>" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            <?php endif; ?>
+        </nav>
     <?php endif; ?>
-
-</section>
+<?php endif; ?>
