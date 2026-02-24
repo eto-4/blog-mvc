@@ -1,61 +1,80 @@
 <?php
 // views/admin/index.php
-
 /** @var array $stats */
 ?>
 
-<section class="admin-layout">
+<div class="d-flex">
 
     <?php require APP_ROOT . '/src/Views/admin/sidebar.php'; ?>
 
-    <!-- Contingut principal -->
-    <main class="admin-main">
+    <main class="flex-grow-1 p-4 bg-light">
 
-        <h1 class="admin-page-title">Dashboard</h1>
+        <h1 class="h4 fw-bold mb-4">Dashboard</h1>
 
-        <!-- Estadístiques globals -->
-        <div class="admin-stats-grid">
-            <div class="admin-stat-card">
-                <span class="admin-stat-number"><?= $stats['total_users'] ?></span>
-                <span class="admin-stat-label">Usuaris totals</span>
-                <span class="admin-stat-sub">+<?= $stats['new_users_30d'] ?> aquest mes</span>
+        <!-- Estadístiques -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-5">
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="fs-2 fw-bold text-primary"><?= (int) $stats['total_users'] ?></div>
+                        <div class="fw-semibold">Usuaris totals</div>
+                        <div class="text-muted small">+<?= (int) $stats['new_users_30d'] ?> aquest mes</div>
+                    </div>
+                </div>
             </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-number"><?= $stats['total_posts'] ?></span>
-                <span class="admin-stat-label">Posts totals</span>
-                <span class="admin-stat-sub">+<?= $stats['new_posts_30d'] ?> aquest mes</span>
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="fs-2 fw-bold text-primary"><?= (int) $stats['total_posts'] ?></div>
+                        <div class="fw-semibold">Posts totals</div>
+                        <div class="text-muted small">+<?= (int) $stats['new_posts_30d'] ?> aquest mes</div>
+                    </div>
+                </div>
             </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-number"><?= $stats['published_posts'] ?></span>
-                <span class="admin-stat-label">Posts publicats</span>
-                <span class="admin-stat-sub"><?= $stats['draft_posts'] ?> esborranys · <?= $stats['archived_posts'] ?> arxivats</span>
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="fs-2 fw-bold text-success"><?= (int) $stats['published_posts'] ?></div>
+                        <div class="fw-semibold">Posts publicats</div>
+                        <div class="text-muted small">
+                            <?= (int) $stats['draft_posts'] ?> esborranys · <?= (int) $stats['archived_posts'] ?> arxivats
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="admin-stat-card">
-                <span class="admin-stat-number"><?= number_format($stats['total_views']) ?></span>
-                <span class="admin-stat-label">Visualitzacions totals</span>
-                <span class="admin-stat-sub">Suma de tots els posts</span>
+            <div class="col">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="fs-2 fw-bold text-info"><?= number_format((int) $stats['total_views']) ?></div>
+                        <div class="fw-semibold">Visualitzacions totals</div>
+                        <div class="text-muted small">Suma de tots els posts</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Accesos ràpids -->
-        <div class="admin-quick-actions">
-            <h2>Accions ràpides</h2>
-            <div class="admin-quick-grid">
-                <a href="<?= BASE_PATH ?>/admin/users" class="admin-quick-card">
-                    <span class="admin-quick-icon">&#x1F464;</span>
-                    <span>Gestionar usuaris</span>
-                </a>
-                <a href="<?= BASE_PATH ?>/admin/posts" class="admin-quick-card">
-                    <span class="admin-quick-icon">&#x1F5CE;</span>
-                    <span>Gestionar posts</span>
-                </a>
-                <a href="<?= BASE_PATH ?>/admin/audit" class="admin-quick-card">
-                    <span class="admin-quick-icon">&#x1F554;</span>
-                    <span>Veure historial</span>
-                </a>
-            </div>
+        <!-- Accions ràpides -->
+        <h2 class="h6 fw-bold text-uppercase text-muted mb-3">Accions ràpides</h2>
+        <div class="d-flex gap-3 flex-wrap">
+            <a href="<?= BASE_PATH ?>/admin/users" class="card border-0 shadow-sm text-decoration-none text-dark" style="min-width:160px">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-2 text-primary d-block mb-2"></i>
+                    Gestionar usuaris
+                </div>
+            </a>
+            <a href="<?= BASE_PATH ?>/admin/posts" class="card border-0 shadow-sm text-decoration-none text-dark" style="min-width:160px">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-text fs-2 text-primary d-block mb-2"></i>
+                    Gestionar posts
+                </div>
+            </a>
+            <a href="<?= BASE_PATH ?>/admin/audit" class="card border-0 shadow-sm text-decoration-none text-dark" style="min-width:160px">
+                <div class="card-body text-center">
+                    <i class="bi bi-clock-history fs-2 text-primary d-block mb-2"></i>
+                    Veure historial
+                </div>
+            </a>
         </div>
 
     </main>
-
-</section>
+</div>

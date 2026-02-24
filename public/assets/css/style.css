@@ -82,7 +82,7 @@ main.main-content {
    Admin sidebar
    ========================================================= */
 .admin-sidebar {
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 95vh);
     background: #1a1d21;
     border-right: 1px solid rgba(255,255,255,0.06);
 }
@@ -107,7 +107,7 @@ main.main-content {
 }
 
 .admin-sidebar .nav-section-title {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
