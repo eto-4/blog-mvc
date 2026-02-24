@@ -212,7 +212,9 @@ class Router
         // Si no trobem cap ruta → Error 404
         http_response_code(404);
         if (defined('APP_ROOT') && file_exists(APP_ROOT . '/src/Views/home/404.php')) {
+            require APP_ROOT . '/src/Views/layouts/header.php';
             require APP_ROOT . '/src/Views/home/404.php';
+            require APP_ROOT . '/src/Views/layouts/footer.php';
         } else {
             echo '404 - Pàgina no trobada';
         }
