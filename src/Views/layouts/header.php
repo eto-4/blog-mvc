@@ -25,7 +25,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <ul class="nav-right">
                     <li><a href="<?= BASE_PATH ?>/">Inici</a></li>
                     <li><a href="<?= BASE_PATH ?>/posts">Posts</a></li>
-                    <li><a href="<?= BASE_PATH ?>/search">Cerca</a></li>
 
                     <?php if ($isLoggedIn): ?>
                         <li><a href="<?= BASE_PATH ?>/my-posts">Els meus posts</a></li>
@@ -38,7 +37,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                             </form>
                         </li>
                     <?php else: ?>
-                        <li><a href="<?= BASE_PATH ?>/login">Entrar</a></li>
+                        <li><a href="<?= BASE_PATH ?>/login">Iniciar Sessió</a></li>
                         <li><a href="<?= BASE_PATH ?>/register">Registrar-se</a></li>
                     <?php endif; ?>
                 </ul>

@@ -163,7 +163,7 @@ class PostController
         AuthMiddleware::handle();
 
         $this->render('posts/create', [
-            'csrfToken' => Csrf::generate(),
+            'csrfToken' => Csrf::token(),
         ]);
     }
 
@@ -186,7 +186,7 @@ class PostController
             $this->render('posts/create', [
                 'errors'    => $errors,
                 'old'       => $_POST,
-                'csrfToken' => Csrf::generate(),
+                'csrfToken' => Csrf::token(),
             ]);
             return;
         }
@@ -216,7 +216,7 @@ class PostController
 
         $this->render('posts/edit', [
             'post'      => $post,
-            'csrfToken' => Csrf::generate(),
+            'csrfToken' => Csrf::token(),
         ]);
     }
 
@@ -241,7 +241,7 @@ class PostController
                 'errors'    => $errors,
                 'post'      => $post,
                 'old'       => $_POST,
-                'csrfToken' => Csrf::generate(),
+                'csrfToken' => Csrf::token(),
             ]);
             return;
         }
