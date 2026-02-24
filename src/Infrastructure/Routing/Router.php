@@ -203,7 +203,7 @@ class Router
         
         // LOG CAP RUTA COINCIDEIX - WARNING
         if ($this->logger) {
-            $this->logger->warning('Cap ruta coincideix', [
+            $this->logger->error('Cap ruta coincideix', [
                 'uri'    => $uri,
                 'method' => $_SERVER['REQUEST_METHOD'],
                 'routes' => array_column($this->routes, 'pattern')
