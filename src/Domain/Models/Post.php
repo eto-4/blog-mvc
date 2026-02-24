@@ -23,6 +23,7 @@ class Post
     public ?string $excerpt   = null;
     public ?string $featured_image = null;
     public ?int $author_id    = null;
+    public ?string $author_name = null;
     public string $status     = 'draft';
     public int $views_count   = 0;
     public ?string $published_at = null;
@@ -49,7 +50,13 @@ class Post
      */
     public function load(int $id): bool
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id LIMIT 1');
+        $stmt = $this->pdo->prepare('
+            SELECT p.*, u.name AS author_name 
+            FROM posts p
+            JOIN users u ON u.id = p.author_id 
+            WHERE p.id = :id
+            LIMIT 1
+        ');
         $stmt->execute([':id' => $id]);
         $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -71,7 +78,13 @@ class Post
      */
     public function loadBySlug(string $slug): bool
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE slug = :slug LIMIT 1');
+        $stmt = $this->pdo->prepare('
+            SELECT p.*, u.name AS author_name
+            FROM posts p
+            JOIN users u ON u.id = p.author_id
+            WHERE p.slug = :slug
+            LIMIT 1 
+        ');
         $stmt->execute([':slug' => $slug]);
         $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
