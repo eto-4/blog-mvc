@@ -32,7 +32,7 @@ class AuthController
     {
         if (!Csrf::validate()) {
             http_response_code(403);
-            echo 'Token CSRF invàlid.';
+            Redirect::withError('/', 'Token de sessió Invalid');
             return;
         }
 
@@ -64,7 +64,8 @@ class AuthController
     {
         if (!Csrf::validate()) {
             http_response_code(403);
-            echo 'Token CSRF invàlid.';
+            Redirect::withError('/', 'Token de sessió Invalid');
+
             return;
         }
 
