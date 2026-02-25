@@ -55,5 +55,5 @@ return function (Router $router): void {
     $router->get('/admin/audit', [AdminController::class, 'adminAuditLog']);
     $router->post('/admin/audit/{id}/restore', [AdminController::class, 'adminRestore']);
     $router->post('/admin/audit/{id}/delete', [AdminController::class, 'adminAuditDelete']);
-
+    $router->post('/admin/posts/{id}/delete', [AdminController::class, 'adminDeletePost']);
 };

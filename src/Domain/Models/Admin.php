@@ -121,7 +121,12 @@ class Admin
             return;
         }
 
-        // Guardar snapshot a audit_log
+        // Guardar snapshot dels posts ABANS del CASCADE
+        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE author_id = :author_id');
+        $stmt->execute([':author_id' => $userId]);
+        $userData['posts'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Guardar snapshot de l'usuari
         $this->logAction('delete_user', 'user', $userId, $userData, $performedBy);
 
         // Eliminar (CASCADE eliminarà els posts associats)
@@ -168,7 +173,12 @@ class Admin
         }
 
         // Snapshot abans del canvi
-        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
+        $stmt = $this->pdo->prepare('
+            SELECT p.*, u.name AS author_name
+            FROM posts p
+            JOIN users u ON u.id = p.author_id
+            WHERE p.id = :id
+        ');
         $stmt->execute([':id' => $postId]);
         $postData = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -203,7 +213,12 @@ class Admin
      */
     public function deletePost(int $postId, int $performedBy): void
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
+        $stmt = $this->pdo->prepare('
+            SELECT p.*, u.name AS author_name
+            FROM posts p
+            JOIN users u ON u.id = p.author_id
+            WHERE p.id = :id
+        ');
         $stmt->execute([':id' => $postId]);
         $postData = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -369,6 +384,37 @@ class Admin
             ':role'       => $data['role'] ?? 'user',
             ':created_at' => $data['created_at'],
         ]);
+        
+        // Restaurar els posts de l'usuari automàticament
+        foreach ($data['posts'] ?? [] as $post) {
+            // Comprovar conflicte de slug
+            $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM posts WHERE slug = :slug');
+            $stmt->execute([':slug' => $post['slug']]);
+            if ((int) $stmt->fetchColumn() > 0) {
+                $post['slug'] = $post['slug'] . '-restored-' . time();
+            }
+
+            $stmt = $this->pdo->prepare("
+                INSERT INTO posts
+                    (id, title, slug, content, excerpt, featured_image,
+                     author_id, status, views_count, published_at, created_at, updated_at)
+                VALUES
+                    (:id, :title, :slug, :content, :excerpt, :featured_image,
+                     :author_id, 'draft', :views_count, :published_at, :created_at, NOW())
+            ");
+            $stmt->execute([
+                ':id'             => $post['id'],
+                ':title'          => $post['title'],
+                ':slug'           => $post['slug'],
+                ':content'        => $post['content'],
+                ':excerpt'        => $post['excerpt'],
+                ':featured_image' => $post['featured_image'],
+                ':author_id'      => $post['author_id'],
+                ':views_count'    => $post['views_count'],
+                ':published_at'   => $post['published_at'],
+                ':created_at'     => $post['created_at'],
+            ]);
+        }
 
         // Registrar la restauració al audit_log
         $this->logAction('restore_user', 'user', (int) $data['id'], $data, $performedBy);

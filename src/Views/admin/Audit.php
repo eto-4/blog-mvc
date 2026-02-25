@@ -18,7 +18,7 @@ $actionBadges = [
 ];
 ?>
 
-<div class="d-flex" style="min-height: calc(100vh - 56px)">
+<div class="d-flex">
 
     <?php require APP_ROOT . '/src/Views/admin/sidebar.php'; ?>
 
@@ -43,13 +43,15 @@ $actionBadges = [
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Acció</th>
-                                <th>Entitat</th>
-                                <th>Snapshot</th>
-                                <th>Admin</th>
-                                <th>Data</th>
-                                <th>Expira</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Acció</th>
+                                <th class="text-center">UserID</th>
+                                <th class="text-center">Entitat</th>
+                                <th class="text-center">Dades Entitat</th>
+                                <th class="text-center">Snapshot</th>
+                                <th class="text-center">Admin</th>
+                                <th class="text-center">Data</th>
+                                <th class="text-center">Expira</th>
                                 <th class="text-end">Accions</th>
                             </tr>
                         </thead>
@@ -60,30 +62,41 @@ $actionBadges = [
                                     $isRestorable = in_array($entry['action'], ['delete_user', 'delete_post'], true);
                                 ?>
                                 <tr>
-                                    <td class="text-muted small"><?= (int) $entry['id'] ?></td>
-                                    <td>
+                                    <td class="text-center text-muted small"><?= (int) $entry['id'] ?></td>
+                                    <td class="text-center">
                                         <span class="badge bg-<?= $actionBadges[$entry['action']] ?? 'secondary' ?>">
                                             <?= $actionLabels[$entry['action']] ?? htmlspecialchars($entry['action'], ENT_QUOTES) ?>
                                         </span>
                                     </td>
-                                    <td class="text-muted small">
+                                    <td class="text-center small">
+                                        <?php if ($entry['entity_type'] === 'post'): ?>
+                                            <?= htmlspecialchars($data['author_id'] ?? '—', ENT_QUOTES) ?>
+                                        <?php else: ?>
+                                            —
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-center text-muted small">
                                         <?= htmlspecialchars($entry['entity_type'], ENT_QUOTES) ?>
                                         #<?= (int) $entry['entity_id'] ?>
                                     </td>
-                                    <td style="max-width: 200px;">
-                                        <?php if ($entry['entity_type'] === 'user'): ?>
-                                            <span class="fw-semibold small"><?= htmlspecialchars($data['name'] ?? '—', ENT_QUOTES) ?></span><br>
-                                            <span class="text-muted small"><?= htmlspecialchars($data['email'] ?? '—', ENT_QUOTES) ?></span>
-                                        <?php elseif ($entry['entity_type'] === 'post'): ?>
-                                            <span class="fw-semibold small"><?= htmlspecialchars(mb_substr($data['title'] ?? '—', 0, 50), ENT_QUOTES) ?></span><br>
-                                            <span class="text-muted small">Estat: <?= htmlspecialchars($data['status'] ?? '—', ENT_QUOTES) ?></span>
+                                    <td style="max-width: 200px;" class="text-center">
+                                        <?php if ($entry['entity_type'] === 'post'): ?>
+                                            <span class="fw-semibold small">
+                                                <?= htmlspecialchars(mb_substr($data['title'] ?? '—', 0, 50), ENT_QUOTES) ?>
+                                            </span><br>
+                                            <span class="text-muted small">
+                                                Estat: <?= htmlspecialchars($data['status'] ?? '—', ENT_QUOTES) ?>
+                                            </span>
                                         <?php else: ?>
-                                            <span class="text-muted small"><?= htmlspecialchars(mb_substr($entry['entity_data'], 0, 80), ENT_QUOTES) ?>...</span>
+                                            <span class="text-muted small">—</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="small"><?= htmlspecialchars($entry['admin_name'], ENT_QUOTES) ?></td>
-                                    <td class="text-muted small"><?= date('d/m/Y H:i', strtotime($entry['created_at'])) ?></td>
-                                    <td class="text-muted small"><?= date('d/m/Y', strtotime($entry['expires_at'])) ?></td>
+                                    <td>
+                                        <span class="text-muted small"><?= htmlspecialchars(mb_substr($entry['entity_data'], 0, 80), ENT_QUOTES) ?>...</span>
+                                    </td>
+                                    <td class="text-center small"><?= htmlspecialchars($entry['admin_name'], ENT_QUOTES) ?></td>
+                                    <td class="text-center text-muted small"><?= date('d/m/Y H:i', strtotime($entry['created_at'])) ?></td>
+                                    <td class="text-center text-muted small"><?= date('d/m/Y', strtotime($entry['expires_at'])) ?></td>
                                     <td class="text-end">
                                         <div class="d-flex gap-1 justify-content-end">
                                             <?php if ($isRestorable): ?>
@@ -96,14 +109,6 @@ $actionBadges = [
                                                     </button>
                                                 </form>
                                             <?php endif; ?>
-                                            <form method="POST"
-                                                  action="<?= BASE_PATH ?>/admin/audit/<?= (int) $entry['id'] ?>/delete"
-                                                  onsubmit="return confirm('Eliminar permanentment aquesta entrada?')">
-                                                <?= \App\Infrastructure\Security\Csrf::field() ?>
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

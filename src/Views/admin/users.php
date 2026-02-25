@@ -3,7 +3,7 @@
 /** @var array $users */
 ?>
 
-<div class="d-flex" style="min-height: calc(100vh - 56px)">
+<div class="d-flex">
 
     <?php require APP_ROOT . '/src/Views/admin/sidebar.php'; ?>
 

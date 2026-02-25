@@ -159,6 +159,22 @@ class AdminController
         Redirect::withSuccess('/admin/posts', 'Estat del post actualitzat.');
     }
 
+    /**
+     * POST /admin/posts/{id}/delete
+     */
+    public function adminDeletePost(string $id): void
+    {
+        AdminMiddleware::handle();
+        Csrf::validate();
+    
+        $this->adminModel->deletePost((int) $id, $this->adminId());
+    
+        Redirect::withSuccess(
+            '/admin/posts', 
+            'Post eliminat correctament. Pots restaurar-lo des del historial.'
+        );
+    }
+
     // -------------------------------------------------------------------------
     // Audit Log
     // -------------------------------------------------------------------------
