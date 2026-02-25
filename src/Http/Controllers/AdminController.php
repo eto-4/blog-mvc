@@ -202,9 +202,10 @@ class AdminController
     {
         AdminMiddleware::handle();
         Csrf::validate();
-
+        
         $success = $this->adminModel->restoreFromAudit((int) $id, $this->adminId());
 
+        
         if ($success) {
             Redirect::withSuccess('/admin/audit', 'Entitat restaurada correctament.');
         } else {

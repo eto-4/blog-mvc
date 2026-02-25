@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 define('APP_ROOT', dirname(__DIR__));
 define('BASE_PATH', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
 
@@ -14,6 +15,7 @@ use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use App\Http\Routing\Router;
+use App\Http\Routing\Redirect;
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
@@ -34,5 +36,16 @@ try {
 
 } catch (RuntimeException $e) {
     $loggerMng->error($e->getMessage(), ['exception' => $e]);
-    echo "Ha succeït un error inesperat.";
+
+    // Comprovar rol
+    $role = $_SESSION['user_role'] ?? 'user'; 
+
+    if ($role === 'admin') {
+        Redirect::withError('/admin/audit', 'Ha succeït un error: ' . $e->getMessage());
+    } 
+    else {
+        Redirect::withError('/', 'Ha succeït un error: ' . $e->getMessage());
+    }
+
+    exit;
 }

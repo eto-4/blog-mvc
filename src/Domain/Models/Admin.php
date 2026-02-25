@@ -363,6 +363,13 @@ class Admin
      */
     private function restoreUser(array $data, int $auditId, int $performedBy): bool
     {
+
+        $stmt = $this->pdo->prepare("SELECT id FROM users WHERE id = :id");
+        $stmt->execute(['id' => $data['id']]);
+        if ($stmt->fetch()) {
+            $data['id'] = 'restored_' . time() . '_' . $data['id'];
+        }
+
         // Comprovar si l'email ja existeix
         $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
         $stmt->execute([':email' => $data['email']]);
