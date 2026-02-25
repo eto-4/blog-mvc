@@ -66,7 +66,7 @@ class PostController
     public function index(): void
     {
         $page   = max(1, (int) ($_GET['page'] ?? 1));
-        $result = Post::findAllPaginated(null, $page, 10);
+        $result = Post::findAllPaginated(null, $page, 9);
 
         $this->render('posts/index', [
             'posts'       => $result['posts'],

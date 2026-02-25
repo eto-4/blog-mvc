@@ -71,27 +71,46 @@ $isSearch = isset($searchQuery);
             </div>
         <?php endforeach; ?>
     </div>
-
     <?php if ($totalPages > 1): ?>
-        <nav class="d-flex justify-content-center gap-1">
-            <?php if ($currentPage > 1): ?>
-                <a href="?page=<?= $currentPage - 1 ?>" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-            <?php endif; ?>
-
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <a href="?page=<?= $i ?>"
-                   class="btn btn-sm <?= $i === $currentPage ? 'btn-primary' : 'btn-outline-secondary' ?>">
-                    <?= $i ?>
-                </a>
-            <?php endfor; ?>
-
-            <?php if ($currentPage < $totalPages): ?>
-                <a href="?page=<?= $currentPage + 1 ?>" class="btn btn-sm btn-outline-secondary">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            <?php endif; ?>
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+    
+                <!-- Flecha anterior -->
+                <?php if ($currentPage > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                            &laquo;
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo;</span>
+                    </li>
+                <?php endif; ?>
+                
+                <!-- Números de página -->
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+                
+                <!-- Flecha siguiente -->
+                <?php if ($currentPage < $totalPages): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                            &raquo;
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="page-item disabled">
+                        <span class="page-link">&raquo;</span>
+                    </li>
+                <?php endif; ?>
+                
+            </ul>
         </nav>
     <?php endif; ?>
 <?php endif; ?>

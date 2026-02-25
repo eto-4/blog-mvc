@@ -211,7 +211,7 @@ class Post
      * @param int      $perPage Posts per pàgina
      * @return array{posts: array, total: int, pages: int}
      */
-    public static function findAllPaginated(?PDO $pdo = null, int $page = 1, int $perPage = 10): array
+    public static function findAllPaginated(?PDO $pdo = null, int $page = 1, int $perPage = 9): array
     {
         $pdo    = $pdo ?? Database::getInstance()->getConnection();
         $offset = ($page - 1) * $perPage;
@@ -253,7 +253,7 @@ class Post
         ?PDO $pdo = null,
         int $authorId = 0,
         int $page = 1,
-        int $perPage = 10
+        int $perPage = 9
     ): array {
         $pdo    = $pdo ?? Database::getInstance()->getConnection();
         $offset = ($page - 1) * $perPage;
