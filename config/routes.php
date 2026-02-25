@@ -40,13 +40,13 @@ return function (Router $router): void {
     $router->post('/my-posts/{id}/delete', [PostController::class, 'delete']);
     $router->post('/my-posts/{id}/publish', [PostController::class, 'publish']);
 
-    // Rutes Perfil Usuari
+    // Rutes Perfil Usuari (Auth required)
     $router->get('/profile', [UserController::class, 'userProfile']);
     $router->get('/profile/edit', [UserController::class, 'userEditProfile']);
     $router->post('/profile/update', [UserController::class, 'update']);
     $router->post('/profile/avatar', [UserController::class, 'avatar']);
 
-    // Rutes d'administració
+    // Rutes d'administració (Auth required)
     $router->get('/admin', [AdminController::class, 'adminIndex']);
     $router->get('/admin/users', [AdminController::class, 'adminUserList']);
     $router->get('/admin/posts', [AdminController::class, 'adminPosts']);
