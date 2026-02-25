@@ -370,13 +370,6 @@ class Admin
             $data['id'] = 'restored_' . time() . '_' . $data['id'];
         }
 
-        // Comprovar si l'email ja existeix
-        $stmt = $this->pdo->prepare('SELECT COUNT(*) FROM users WHERE email = :email');
-        $stmt->execute([':email' => $data['email']]);
-        if ((int) $stmt->fetchColumn() > 0) {
-            $data['email'] = 'restored_' . time() . '_' . $data['email'];
-        }
-
         $stmt = $this->pdo->prepare("
             INSERT INTO users (id, name, email, password, avatar, bio, role, created_at, updated_at)
             VALUES (:id, :name, :email, :password, :avatar, :bio, :role, :created_at, NOW())
