@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Routing;
+namespace App\Http\Routing;
 
 use Psr\Log\LoggerInterface;
 

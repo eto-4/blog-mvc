@@ -6,7 +6,7 @@ namespace App\Http\Middleware;
 
 use App\Domain\Models\Post;
 use App\Http\Session\Session;
-use App\Infrastructure\Routing\Redirect;
+use App\Http\Routing\Redirect;
 
 /**
  * OwnerMiddleware

@@ -8,7 +8,7 @@ use App\Domain\Models\User;
 use App\Domain\Services\AuthService;
 use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
-use App\Infrastructure\Routing\Redirect;
+use App\Http\Routing\Redirect;
 
 // Middleware
 use App\Http\Middleware\AuthMiddleware;

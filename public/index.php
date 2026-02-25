@@ -13,7 +13,7 @@ require_once APP_ROOT . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use App\Infrastructure\Routing\Router;
+use App\Http\Routing\Router;
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();

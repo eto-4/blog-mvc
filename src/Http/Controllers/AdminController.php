@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 use App\Domain\Models\Admin;
 use App\Http\Session\Session;
 use App\Infrastructure\Security\Csrf;
-use App\Infrastructure\Routing\Redirect;
+use App\Http\Routing\Redirect;
 
 // Middleware
 use App\Http\Middleware\AdminMiddleware;

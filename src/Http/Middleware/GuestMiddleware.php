@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Http\Session\Session;
-use App\Infrastructure\Routing\Redirect;
+use App\Http\Routing\Redirect;
 
 /**
  * GuestMiddleware

@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Services\AuthService;
 use App\Infrastructure\Security\Csrf;
-use App\Infrastructure\Routing\Redirect;
+use App\Http\Routing\Redirect;
 
 // Middleware
 use App\Http\Middleware\GuestMiddleware;
