@@ -107,7 +107,7 @@ class PostController
     public function showAuthor(string $id): void
     {
         $page   = max(1, (int) ($_GET['page'] ?? 1));
-        $result = Post::findByAuthorPaginated(null, (int) $id, $page, 10);
+        $result = Post::findByAuthorPaginated(null, (int) $id, $page, 9);
 
         $this->render('posts/index', [
             'posts'       => $result['posts'],
